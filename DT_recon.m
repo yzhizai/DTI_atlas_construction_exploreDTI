@@ -1,5 +1,16 @@
-function tempDT = temp_construction
-
+function DT = DT_recon
+%DT_RECON is a function used to generate exploreDTI type DT
+%parameter. which is a 1*6 cell array, each element represent Dxx, Dxy,
+%Dxz, Dyy, Dyz, Dzz, which order is same to the b variable in exploreDTI
+%mat file.
+%
+%Usage: tempDT = DT_RECON;
+%
+%See also: DWI_CON
+%
+%Shaofeng Duan
+%Institute of High Energy Physics
+%2016-05-27
 matFileNames = spm_select(Inf, 'mat', 'choose the trafo mat files ...');
 matFileNames = cellstr(matFileNames);
 
