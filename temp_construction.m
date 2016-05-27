@@ -13,7 +13,6 @@ end
 %     Dcell_05, Dcell_06, Dcell_07, Dcell_08, Dcell_09, Dcell_10, 'UniformOutput', false);
 temp = cellfun(@cstTempDMat, Dcell_01, Dcell_02, 'UniformOutput', false);
 [Dxx, Dxy, Dxz, Dyy, Dyz, Dzz] = cellfun(@Matrix2DT, temp);
-% tempDT = {cell2mat(Dxx) , cell2mat(Dxy) , cell2mat(Dxz) , cell2mat(Dyy) , cell2mat(Dyz) , cell2mat(Dzz)};
 tempDT = {Dxx, Dxy, Dxz, Dyy, Dyz, Dzz};
 save('tempDT.mat' ,'tempDT');
 
@@ -38,13 +37,15 @@ function tempD = cstTempDMat(varargin)
 N = nargin;
 temp = zeros(3);
 for aa = 1:N
-    if sum(sum(isnan(varargin{aa})))
-        tempD = NaN(3);
-        return;
+    if ~sum(sum(isnan(varargin{aa})))
+        temp = temp + logm(varargin{aa});
     end
-    temp = temp + logm(varargin{aa});
 end
-tempD = expm(temp/N);
+if isequal(zeros(3), temp)
+    tempD = zeros(3);
+else
+    tempD = expm(temp/N);
+end
 
 function [dxx, dxy, dxz, dyy, dyz, dzz] = Matrix2DT(DT_temp)
 dxx = DT_temp(1, 1);

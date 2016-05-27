@@ -16,8 +16,11 @@ Dyz = DT{5};
 Dzz = DT{6};
 
 for aa = 1:size(bmat, 1)
-    Y(:, :, :, aa) = Y0.*exp(bmat(aa, 1)*Dxx + bmat(aa, 2)*Dxy + bmat(aa, 3)*Dxz + bmat(aa, 4)*Dyy + bmat(aa, 5)*Dyz + bmat(aa, 6)*Dzz); 
+    Y(:, :, :, aa) = Y0.*exp(-(bmat(aa, 1)*Dxx + bmat(aa, 2)*Dxy + bmat(aa, 3)*Dxz + bmat(aa, 4)*Dyy + bmat(aa, 5)*Dyz + bmat(aa, 6)*Dzz)); 
 end
+
+Y = flipud(Y);
+Y = permute(Y, [2, 1, 3, 4]);
 
 
 fname = 'template_DTI.nii';
@@ -39,7 +42,6 @@ ni.descrip = 'template by Shaofeng';
 create(ni);
 for i=1:size(ni.dat,4)
     ni.dat(:,:,:,i) = Y(:, :, :, i);
-    spm_get_space([ni.dat.fname ',' num2str(i)], V.mat);
 end
 
 
