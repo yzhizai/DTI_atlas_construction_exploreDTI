@@ -22,10 +22,10 @@ eval(cmdstr1);
 end
 % temp = cellfun(@cstTempDMat, Dcell_01, Dcell_02, Dcell_03, Dcell_04, ...
 %     Dcell_05, Dcell_06, Dcell_07, Dcell_08, Dcell_09, Dcell_10, 'UniformOutput', false);
-temp = cellfun(@cstTempDMat, Dcell_01, Dcell_02, 'UniformOutput', false);
+temp = cellfun(@cstTempDMat, Dcell_01, Dcell_02, Dcell_03, Dcell_04, ...
+     Dcell_05, Dcell_06, 'UniformOutput', false);
 [Dxx, Dxy, Dxz, Dyy, Dyz, Dzz] = cellfun(@Matrix2DT, temp);
-tempDT = {Dxx, Dxy, Dxz, Dyy, Dyz, Dzz};
-save('tempDT.mat' ,'tempDT');
+DT = {Dxx, Dxy, Dxz, Dyy, Dyz, Dzz};
 
 
 function Dcell = DT2Matrix(DT)
@@ -36,6 +36,7 @@ Dyy = DT{4};
 Dyz = DT{5};
 Dzz = DT{6};
 
+
 Dcell = arrayfun(@DT2Matrix_assist, Dxx, Dxy, Dxz, Dyy, Dyz, Dzz, 'UniformOutput', false);
 
 function D = DT2Matrix_assist(dxx, dxy, dxz, dyy, dyz, dzz)
@@ -45,17 +46,19 @@ D = [dxx, dxy, dxz; dxy, dyy, dyz; dxz, dyz, dzz];
 % cstTempDMat is a function used Log-Euclidean Frechet mean to
 % avergage the Tensors.
 function tempD = cstTempDMat(varargin)
+bb = 0;
 N = nargin;
 temp = zeros(3);
 for aa = 1:N
     if ~sum(sum(isnan(varargin{aa})))
         temp = temp + logm(varargin{aa});
+        bb = bb + 1;
     end
 end
 if isequal(zeros(3), temp)
     tempD = zeros(3);
 else
-    tempD = expm(temp/N);
+    tempD = expm(temp/bb);
 end
 
 function [dxx, dxy, dxz, dyy, dyz, dzz] = Matrix2DT(DT_temp)

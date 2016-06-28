@@ -33,8 +33,12 @@ for aa = 1:size(bmat, 1)
     Y(:, :, :, aa) = Y0.*exp(-(bmat(aa, 1)*Dxx + bmat(aa, 2)*Dxy + bmat(aa, 3)*Dxz + bmat(aa, 4)*Dyy + bmat(aa, 5)*Dyz + bmat(aa, 6)*Dzz)); 
 end
 
-Y = flipud(Y);
+
 Y = permute(Y, [2, 1, 3, 4]);
+Y = fliplr(Y);
+Y = flipud(Y);
+
+Y(isnan(Y)) = 0;
 
 fpath = spm_select(1, 'dir', 'choose a directory to store the tempalte file.');
 fname = fullfile(fpath, 'template_DTI.nii');
@@ -58,10 +62,10 @@ for i=1:size(ni.dat,4)
     ni.dat(:,:,:,i) = Y(:, :, :, i);
 end
 
-if isempty(varargin)
+if ~isempty(varargin)
     IND = bmat(:,[1 4 6])<0;
     bmat([IND(:,1) false([size(IND,1) 2]) IND(:,2) false([size(IND,1) 1]) IND(:,3)])=0;
-    bvals = sum(bmat(:,[1 4 6]),2); % the b-values
+    bvals = round(sum(bmat(:,[1 4 6]),2)); % the b-values
 
     BSign_x = sign(sign(bmat(:,1:3)) + 0.0001); % Adding 0.0001 avoids getting zeros
     BSign_y = sign(sign(bmat(:,[2 4 5])) + 0.0001); % Adding 0.0001 avoids getting zeros
@@ -73,6 +77,9 @@ if isempty(varargin)
     grad_n = sqrt(sum(grad.*grad,2));
     grad = grad./[grad_n grad_n grad_n]; % the gradient orientations (not unique with respect to sign... think orientation vs. direction)
     grad(isnan(grad)) = 0;
+   
+    grad(:, 1) = grad(:, 1) * (-1);
+    grad = grad(:, [2, 1, 3]);
 
     fid1 = fopen(fullfile(fpath, 'orient.bval'), 'w+');
     fprintf(fid1, '%f\t', bvals);
