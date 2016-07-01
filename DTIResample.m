@@ -1,4 +1,4 @@
-function DT = DTIResample(DT, diffeoField)
+function DT = DTIResample(DT, diffeoField, Def)
 %DTIRESAMPLE - use FS method to resample the DTs of DTI image.
 %
 %Input:
@@ -19,15 +19,18 @@ uz = diffeoField(:, :, :, 3);
 [gyx, gyy, gyz] = imgradientxyz(uy);
 [gzx, gzy, gzz] = imgradientxyz(uz);
 
-[X, Y, Z] = meshgrid(1:size(ux, 1), 1:size(ux, 2), 1:size(ux, 3));
+niifile = spm_select(1, 'image', 'choose a subj space nii file');
+V = spm_vol(niifile);
 
-new_x = X + ux;
-new_y = Y + uy;
-new_z = Z + uz;
+M            = inv(V.mat);
 
-new_x(new_x <= 0 | new_x > size(ux, 1)) = NaN;
-new_y(new_y <= 0 | new_y > size(uy, 2)) = NaN;
-new_z(new_z <= 0 | new_z > size(uz, 3)) = NaN;
+new_x = M(1,1)*Def(:,:,:,1)+M(1,2)*Def(:,:,:,2)+M(1,3)*Def(:,:,:,3)+M(1,4);
+new_y = M(2,1)*Def(:,:,:,1)+M(2,2)*Def(:,:,:,2)+M(2,3)*Def(:,:,:,3)+M(2,4);
+new_z = M(3,1)*Def(:,:,:,1)+M(3,2)*Def(:,:,:,2)+M(3,3)*Def(:,:,:,3)+M(3,4);
+
+new_x(new_x <= 0 | new_x > V.dim(1)) = NaN;
+new_y(new_y <= 0 | new_y > V.dim(2)) = NaN;
+new_x(new_z <= 0 | new_z > V.dim(3)) = NaN;
 
 Dcell = DT2Matrix(DT);
 temp = cell(size(Dcell));
