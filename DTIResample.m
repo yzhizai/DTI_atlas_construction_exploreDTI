@@ -42,9 +42,9 @@ for aa = 1:size(ux, 3)
             F = [gxx(cc, bb, aa), gxy(cc, bb, aa), gxz(cc, bb, aa); ...
                     gyx(cc, bb, aa), gyy(cc, bb, aa), gyz(cc, bb, aa); ...
                         gzx(cc, bb, aa), gzy(cc, bb, aa), gzz(cc, bb, aa)] + eye(3);
-            F = pinv(F);
-            R = (F*F').^(-1/2)*F;  %FS method
+            R = (F*F')^(-1/2)*F;  %FS method
             Dt = Dcell{ceil(new_x(cc,bb,aa)),ceil(new_y(cc,bb,aa)), ceil(new_z(cc,bb,aa))};  % use nearest method to resample.
+            R = pinv(R);
             Dt_adj = R*Dt*R';
             temp{cc, bb, aa} = Dt_adj;  
             end
