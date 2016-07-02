@@ -1,9 +1,9 @@
-function DWI_con(DT, varargin)
-%DWI_CON is a function used a DT to generate a simulate dwis files. The b
+function DWI_con_for_Resample(DT, varargin)
+%DWI_CON_FOR_RESAMPLE is a function used a DT to generate a simulate dwis files. The b
 %value and b vector and B0 image all come from a exploreDTI mat file. The
 %default dwi files name is template.nii.
 %
-%Usage: DWI_CON(DT);
+%Usage: DWI_CON_FOR_RESAMPLE(DT);
 %Inputs:
 %  DT - an exploreDTI type DTI cell array, Dxx, Dxy, Dxz, Dyy, Dyz, Dzz
 %  varargin - a flag to indicate whether to generate bval and bvec
@@ -20,6 +20,11 @@ V = spm_vol(filename);
 dwi = load(matFileName, 'b', 'DWIB0');
 bmat = dwi.b;
 Y0 = dwi.DWIB0;
+
+Y0 = permute(Y0, [2, 1, 3]);
+% Y0 = fliplr(Y0);
+% Y0 = flipud(Y0);
+
 Y = zeros([size(Y0), size(bmat, 1)]);
 
 Dxx = DT{1};
@@ -33,12 +38,8 @@ for aa = 1:size(bmat, 1)
     Y(:, :, :, aa) = Y0.*exp(-(bmat(aa, 1)*Dxx + bmat(aa, 2)*Dxy + bmat(aa, 3)*Dxz + bmat(aa, 4)*Dyy + bmat(aa, 5)*Dyz + bmat(aa, 6)*Dzz)); 
 end
 
-
-% Y = permute(Y, [2, 1, 3, 4]);
-% % Y = fliplr(Y);
-% % Y = flipud(Y);
+Y = permute(Y, [2, 1, 3, 4]);
 Y = rot90(Y, -1);
-
 Y(isnan(Y)) = 0;
 
 fpath = spm_select(1, 'dir', 'choose a directory to store the tempalte file.');

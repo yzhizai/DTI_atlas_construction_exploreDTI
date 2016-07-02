@@ -1,9 +1,9 @@
-function DT = DTIResample(DT, diffeoField, Def)
-%DTIRESAMPLE - use FS method to resample the DTs of DTI image.
+function DT = DTIResample_rigid(DT, affMat, VG, VF)
+%DTIRESAMPLE_RIGID - use FS method to resample the DTs of DTI image.
 %
 %Input:
 %  DT - the diffusion tensor, same with ExploreDTI datatype.
-%  diffeoField - the deformation field of registration
+%  affMat - the matrix of affine transformation
 %
 %See also: DT_RECON DWI_RECON
 %
@@ -11,17 +11,19 @@ function DT = DTIResample(DT, diffeoField, Def)
 %Institute of High Energy Physics
 %2016-06-28
 
-
-J = spm_diffeo('def2jac', single(diffeoField));
+F = affMat(1:3, 1:3);
+F = inv(F);
+R = (F*F')^(-1/2)*F;
 
 niifile = spm_select(1, 'image', 'choose a subj space nii file');
 V = spm_vol(niifile);
 
-M            = inv(V.mat);
+[X, Y, Z] = meshgrid(1:128, 1:128, 1:64);
 
-new_x = M(1,1)*Def(:,:,:,1)+M(1,2)*Def(:,:,:,2)+M(1,3)*Def(:,:,:,3)+M(1,4);
-new_y = M(2,1)*Def(:,:,:,1)+M(2,2)*Def(:,:,:,2)+M(2,3)*Def(:,:,:,3)+M(2,4);
-new_z = M(3,1)*Def(:,:,:,1)+M(3,2)*Def(:,:,:,2)+M(3,3)*Def(:,:,:,3)+M(3,4);
+M = VF.mat\affMat*VG.mat;
+new_x = M(1,1)*X+M(1,2)*Y+M(1,3)*Z+M(1,4);
+new_y = M(2,1)*X+M(2,2)*Y+M(2,3)*Z+M(2,4);
+new_z = M(3,1)*X+M(3,2)*Y+M(3,3)*Z+M(3,4);
 
 new_x(new_x <= 0 | new_x > V.dim(1)) = NaN;
 new_y(new_y <= 0 | new_y > V.dim(2)) = NaN;
@@ -30,20 +32,17 @@ new_x(new_z <= 0 | new_z > V.dim(3)) = NaN;
 Dcell = DT2Matrix(DT);
 temp = cell(size(Dcell));
 h_wait = waitbar(0, 'please wait...');
-for aa = 1:size(Def, 3)
-    for bb = 1:size(Def, 2)
-        for cc = 1:size(Def, 1)
+for aa = 1:64
+    for bb = 1:128
+        for cc = 1:128
             if(~isnan(new_x(cc,bb,aa) + new_y(cc,bb,aa) + new_z(cc,bb,aa)))
-            F = reshape(J(cc, bb, aa, :, :), 3,3) + eye(3);
-            R = (F*F')^(-1/2)*F;  %FS method
             Dt = Dcell{ceil(new_x(cc,bb,aa)),ceil(new_y(cc,bb,aa)), ceil(new_z(cc,bb,aa))};  % use nearest method to resample.
-            R = pinv(R);
             Dt_adj = R*Dt*R';
             temp{cc, bb, aa} = Dt_adj;  
             end
         end
     end
-    waitbar(aa/size(Def, 3));
+    waitbar(aa/64);
 end
 close(h_wait);
 
@@ -73,15 +72,13 @@ if(isempty(DT_temp))
     dyz = single(0);
     dzz = single(0);
 else
-    dxx = DT_temp(1, 1);
-    dxy = DT_temp(1, 2);
-    dxz = DT_temp(1, 3);
-    dyy = DT_temp(2, 2);
-    dyz = DT_temp(2, 3);
-    dzz = DT_temp(3, 3);
+    dxx = single(DT_temp(1, 1));
+    dxy = single(DT_temp(1, 2));
+    dxz = single(DT_temp(1, 3));
+    dyy = single(DT_temp(2, 2));
+    dyz = single(DT_temp(2, 3));
+    dzz = single(DT_temp(3, 3));
 end
-
-
 
 
 
