@@ -34,10 +34,8 @@ for aa = 1:size(bmat, 1)
 end
 
 
-% Y = permute(Y, [2, 1, 3, 4]);
-% % Y = fliplr(Y);
-% % Y = flipud(Y);
-Y = rot90(Y, -1);
+Y = permute(Y, [2, 1, 3, 4]);
+Y = rot90(Y, 2);
 
 Y(isnan(Y)) = 0;
 

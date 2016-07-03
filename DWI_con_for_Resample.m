@@ -22,24 +22,21 @@ bmat = dwi.b;
 Y0 = dwi.DWIB0;
 
 Y0 = permute(Y0, [2, 1, 3]);
-% Y0 = fliplr(Y0);
-% Y0 = flipud(Y0);
+Y0 = rot90(Y0, 2);
 
 Y = zeros([size(Y0), size(bmat, 1)]);
 
-Dxx = DT{1};
-Dxy = DT{2};
-Dxz = DT{3};
-Dyy = DT{4};
-Dyz = DT{5};
-Dzz = DT{6};
+Dxx = DT(:, :, :, 1);
+Dxy = DT(:, :, :, 2);
+Dxz = DT(:, :, :, 3);
+Dyy = DT(:, :, :, 4);
+Dyz = DT(:, :, :, 5);
+Dzz = DT(:, :, :, 6);
 
 for aa = 1:size(bmat, 1)
     Y(:, :, :, aa) = Y0.*exp(-(bmat(aa, 1)*Dxx + bmat(aa, 2)*Dxy + bmat(aa, 3)*Dxz + bmat(aa, 4)*Dyy + bmat(aa, 5)*Dyz + bmat(aa, 6)*Dzz)); 
 end
 
-Y = permute(Y, [2, 1, 3, 4]);
-Y = rot90(Y, -1);
 Y(isnan(Y)) = 0;
 
 fpath = spm_select(1, 'dir', 'choose a directory to store the tempalte file.');
