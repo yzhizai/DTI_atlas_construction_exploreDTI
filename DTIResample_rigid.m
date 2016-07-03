@@ -22,30 +22,38 @@ x = 1:VG.dim(1);
 y = 1:VG.dim(2);
 z = 1:VG.dim(3);
 
+mat = VG.mat;
+
 [X, Y] = ndgrid(x, y);
 
-new_posit = zeros([numel(x),numel(y),numel(z),3],'single');
+Def = zeros([numel(x),numel(y),numel(z),3],'single'); %similar to DTIResample.m, you should create Def and mat at first.
 
 for j=1:length(z)
     
-    Mult = VF.mat\affMat*VG.mat;
+    Mult = affMat*VG.mat; %spatial coor corespondance.
     
     X2= Mult(1,1)*X + Mult(1,2)*Y + (Mult(1,3)*z(j) + Mult(1,4));
     Y2= Mult(2,1)*X + Mult(2,2)*Y + (Mult(2,3)*z(j) + Mult(2,4));
     Z2= Mult(3,1)*X + Mult(3,2)*Y + (Mult(3,3)*z(j) + Mult(3,4));
 
-    new_posit(:,:,j,1) = single(X2);
-    new_posit(:,:,j,2) = single(Y2);
-    new_posit(:,:,j,3) = single(Z2);
+    Def(:,:,j,1) = single(X2);
+    Def(:,:,j,2) = single(Y2);
+    Def(:,:,j,3) = single(Z2);
 end
 
-new_x = new_posit(:, :, :, 1);
-new_y = new_posit(:, :, :, 2);
-new_z = new_posit(:, :, :, 3);
+M = inv(mat);
+new_posit          = zeros(size(Def),'single');
+new_posit(:,:,:,1) = M(1,1)*Def(:,:,:,1)+M(1,2)*Def(:,:,:,2)+M(1,3)*Def(:,:,:,3)+M(1,4);
+new_posit(:,:,:,2) = M(2,1)*Def(:,:,:,1)+M(2,2)*Def(:,:,:,2)+M(2,3)*Def(:,:,:,3)+M(2,4);
+new_posit(:,:,:,3) = M(3,1)*Def(:,:,:,1)+M(3,2)*Def(:,:,:,2)+M(3,3)*Def(:,:,:,3)+M(3,4);
 
-new_x(new_x <= 0 | new_x > V.dim(1)) = NaN;
-new_y(new_y <= 0 | new_y > V.dim(2)) = NaN;
-new_x(new_z <= 0 | new_z > V.dim(3)) = NaN;
+new_x = new_posit(:,:,:,1);
+new_y = new_posit(:,:,:,2);
+new_z = new_posit(:,:,:,3);
+
+new_x(new_x <= 0.5 | new_x > VF.dim(1)) = NaN;
+new_y(new_y <= 0.5 | new_y > VF.dim(2)) = NaN;
+new_x(new_z <= 0.5 | new_z > VF.dim(3)) = NaN;
 
 Dcell = DT2Matrix(DT);
 temp = cell(size(Dcell));

@@ -6,7 +6,7 @@ VG = spm_vol(filenames{1});
 VF = spm_vol(filenames{2}); %choose two images to registration
 
 diffeofile = spm_select(1, 'nii', 'choose the deformation field'); %choose the deformation field. Here we made it for spm deformation type.
-[Def, mat] = get_def(diffeofile);
+[Def,~] = get_def(diffeofile);
 
 
 % VG space' real coordinates.
@@ -40,9 +40,9 @@ DTFile = spm_select(1, 'image', 'choose an ExploreDTI dataset to move');
 [pat, tit, ext, ~] = spm_fileparts(DTFile);
 DT = spm_read_vols(spm_vol(fullfile(pat, [tit, ext])));
 
-DT2 = DTIResample(DT, diffeoField, Def, mat, VG, VF);
+DT2 = DTIResample(DT, diffeoField, Def, VG, VF);
 
-DWI_con_for_Resample(DT2, 'template_DWI.nii', 1); %used to reconstruct the DWIs.
+DWI_con_for_Resample(DT2, 'tem'1); %used to reconstruct the DWIs.
 
 
 %==========================================================================

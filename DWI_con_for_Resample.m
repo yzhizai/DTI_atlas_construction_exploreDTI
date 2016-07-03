@@ -1,4 +1,4 @@
-function DWI_con_for_Resample(DT, varargin)
+function DWI_con_for_Resample(DT, outputFile, varargin)
 %DWI_CON_FOR_RESAMPLE is a function used a DT to generate a simulate dwis files. The b
 %value and b vector and B0 image all come from a exploreDTI mat file. The
 %default dwi files name is template.nii.
@@ -40,7 +40,7 @@ end
 Y(isnan(Y)) = 0;
 
 fpath = spm_select(1, 'dir', 'choose a directory to store the tempalte file.');
-fname = fullfile(fpath, 'template_DTI.nii');
+fname = fullfile(fpath, outputFile);
 dt = V.dt(1);
 sf  = V.pinfo(1);
 off = V.pinfo(2);
