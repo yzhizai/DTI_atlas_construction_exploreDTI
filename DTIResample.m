@@ -1,4 +1,4 @@
-function DT = DTIResample(DT, diffeoField, Def)
+function DT = DTIResample(DT, diffeoField, Def, VG, VF)
 %DTIRESAMPLE - use FS method to resample the DTs of DTI image.
 %
 %Input:
@@ -14,18 +14,16 @@ function DT = DTIResample(DT, diffeoField, Def)
 
 J = spm_diffeo('def2jac', single(diffeoField));
 
-niifile = spm_select(1, 'image', 'choose a subj space nii file');
-V = spm_vol(niifile);
 
-M            = inv(V.mat);
+M = inv(VF.mat);
 
-new_x = M(1,1)*Def(:,:,:,1)+M(1,2)*Def(:,:,:,2)+M(1,3)*Def(:,:,:,3)+M(1,4);
-new_y = M(2,1)*Def(:,:,:,1)+M(2,2)*Def(:,:,:,2)+M(2,3)*Def(:,:,:,3)+M(2,4);
-new_z = M(3,1)*Def(:,:,:,1)+M(3,2)*Def(:,:,:,2)+M(3,3)*Def(:,:,:,3)+M(3,4);
+new_x = M(1, 1)*Def(:, :, :, 1) + M(1, 2)*Def(:, :, :, 2) + M(1, 3)*Def(:, :, :, 3) + M(1, 4);
+new_y = M(2, 1)*Def(:, :, :, 1) + M(2, 2)*Def(:, :, :, 2) + M(2, 3)*Def(:, :, :, 3) + M(2, 4);
+new_z = M(3, 1)*Def(:, :, :, 1) + M(3, 2)*Def(:, :, :, 2) + M(3, 3)*Def(:, :, :, 3) + M(3, 4);
 
-new_x(new_x <= 0 | new_x > V.dim(1)) = NaN;
-new_y(new_y <= 0 | new_y > V.dim(2)) = NaN;
-new_x(new_z <= 0 | new_z > V.dim(3)) = NaN;
+new_x(new_x <= 0 | new_x > VF.dim(1)) = NaN;
+new_y(new_y <= 0 | new_y > VF.dim(2)) = NaN;
+new_x(new_z <= 0 | new_z > VF.dim(3)) = NaN;
 
 Dcell = DT2Matrix(DT);
 temp = cell(size(Dcell));
@@ -48,15 +46,21 @@ end
 close(h_wait);
 
 [Dxx, Dxy, Dxz, Dyy, Dyz, Dzz] = cellfun(@Matrix2DT, temp);
-DT = {Dxx, Dxy, Dxz, Dyy, Dyz, Dzz};
+DT = zeros(size(DT));
+DT(:, :, :, 1) = Dxx;
+DT(:, :, :, 2) = Dxy;
+DT(:, :, :, 3) = Dxz;
+DT(:, :, :, 4) = Dyy;
+DT(:, :, :, 5) = Dyz;
+DT(:, :, :, 6) = Dzz;
 
 function Dcell = DT2Matrix(DT)
-Dxx = DT{1};
-Dxy = DT{2};
-Dxz = DT{3};
-Dyy = DT{4};
-Dyz = DT{5};
-Dzz = DT{6};
+Dxx = DT(:, :, :, 1);
+Dxy = DT(:, :, :, 2);
+Dxz = DT(:, :, :, 3);
+Dyy = DT(:, :, :, 4);
+Dyz = DT(:, :, :, 5);
+Dzz = DT(:, :, :, 6);
 
 
 Dcell = arrayfun(@DT2Matrix_assist, Dxx, Dxy, Dxz, Dyy, Dyz, Dzz, 'UniformOutput', false);
@@ -73,13 +77,14 @@ if(isempty(DT_temp))
     dyz = single(0);
     dzz = single(0);
 else
-    dxx = DT_temp(1, 1);
-    dxy = DT_temp(1, 2);
-    dxz = DT_temp(1, 3);
-    dyy = DT_temp(2, 2);
-    dyz = DT_temp(2, 3);
-    dzz = DT_temp(3, 3);
+    dxx = single(DT_temp(1, 1));
+    dxy = single(DT_temp(1, 2));
+    dxz = single(DT_temp(1, 3));
+    dyy = single(DT_temp(2, 2));
+    dyz = single(DT_temp(2, 3));
+    dzz = single(DT_temp(3, 3));
 end
+
 
 
 

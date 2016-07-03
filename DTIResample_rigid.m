@@ -27,6 +27,7 @@ z = 1:VG.dim(3);
 new_posit = zeros([numel(x),numel(y),numel(z),3],'single');
 
 for j=1:length(z)
+    
     Mult = VF.mat\affMat*VG.mat;
     
     X2= Mult(1,1)*X + Mult(1,2)*Y + (Mult(1,3)*z(j) + Mult(1,4));
