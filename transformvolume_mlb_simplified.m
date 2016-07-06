@@ -1,17 +1,10 @@
-function Iout = transformvolume_mlb(varargin)
+function Iout = transformvolume_mlb_simplified(varargin)
 global Isize Iin
 
-Bu=varargin{1};
-Bv=varargin{2};
-Bw=varargin{3};
-Isize_d=varargin{4};
-Osize_d=varargin{5};
-dxa=varargin{6};
-dya=varargin{7};
-dza=varargin{8};
-Def=varargin{9};
-mat=varargin{10};
-Iin=varargin{11};
+Isize_d=varargin{1};
+Def=varargin{2};
+mat=varargin{3};
+Iin=varargin{4};
 
 
 Isize = Isize_d;

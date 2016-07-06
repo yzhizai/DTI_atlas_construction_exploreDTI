@@ -43,8 +43,8 @@ DT = spm_read_vols(spm_vol(fullfile(pat, [tit, ext])));
 DT2 = DTIResample(DT, diffeoField, Def, mat, VG, VF);
 
 fname = inputdlg({'Output file name'}, 'Specified filename');
-fname = fname{1};
-DWI_con_for_Resample(DT2, fname, 1); %used to reconstruct the DWIs.
+fname = fname{1}
+DWI_con_for_Resample(DT2, 'template_DWI.nii', 1); %used to reconstruct the DWIs.
 
 
 %==========================================================================

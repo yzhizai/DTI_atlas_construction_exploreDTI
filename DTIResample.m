@@ -14,7 +14,7 @@ function DT = DTIResample(DT, diffeoField, Def, mat, VG, VF)
 
 J = spm_diffeo('def2jac', single(diffeoField));
 
-M = inv(mat);
+M = inv(VF.mat);
 new_posit          = zeros(size(Def),'single');
 new_posit(:,:,:,1) = M(1,1)*Def(:,:,:,1)+M(1,2)*Def(:,:,:,2)+M(1,3)*Def(:,:,:,3)+M(1,4);
 new_posit(:,:,:,2) = M(2,1)*Def(:,:,:,1)+M(2,2)*Def(:,:,:,2)+M(2,3)*Def(:,:,:,3)+M(2,4);
@@ -56,37 +56,6 @@ DT(:, :, :, 3) = Dxz;
 DT(:, :, :, 4) = Dyy;
 DT(:, :, :, 5) = Dyz;
 DT(:, :, :, 6) = Dzz;
-
-function Dcell = DT2Matrix(DT)
-Dxx = DT(:, :, :, 1);
-Dxy = DT(:, :, :, 2);
-Dxz = DT(:, :, :, 3);
-Dyy = DT(:, :, :, 4);
-Dyz = DT(:, :, :, 5);
-Dzz = DT(:, :, :, 6);
-
-
-Dcell = arrayfun(@DT2Matrix_assist, Dxx, Dxy, Dxz, Dyy, Dyz, Dzz, 'UniformOutput', false);
-
-function D = DT2Matrix_assist(dxx, dxy, dxz, dyy, dyz, dzz)
-D = [dxx, dxy, dxz; dxy, dyy, dyz; dxz, dyz, dzz];
-
-function [dxx, dxy, dxz, dyy, dyz, dzz] = Matrix2DT(DT_temp)
-if(isempty(DT_temp))
-    dxx = single(0);
-    dxy = single(0);
-    dxz = single(0);
-    dyy = single(0);
-    dyz = single(0);
-    dzz = single(0);
-else
-    dxx = single(DT_temp(1, 1));
-    dxy = single(DT_temp(1, 2));
-    dxz = single(DT_temp(1, 3));
-    dyy = single(DT_temp(2, 2));
-    dyz = single(DT_temp(2, 3));
-    dzz = single(DT_temp(3, 3));
-end
 
 
 

@@ -39,7 +39,7 @@ Bw(mindex2(4,z,4)) = pow(w,3)/6;
 end
 
 Y_out = transformvolume_mlb(Bu, Bv, Bw, VF.dim, VG.dim, dx, dy, dz, Def, mat, Iin);
-fname = 'bspline_fa.nii';
+fname = 'bspline_fa2.nii';
 VG.fname = fname;
 V = spm_create_vol(VG);
 spm_write_vol(V, Y_out);

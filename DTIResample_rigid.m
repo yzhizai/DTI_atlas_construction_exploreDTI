@@ -41,7 +41,7 @@ for j=1:length(z)
     Def(:,:,j,3) = single(Z2);
 end
 
-M = inv(mat);
+M = inv(VF.mat);
 new_posit          = zeros(size(Def),'single');
 new_posit(:,:,:,1) = M(1,1)*Def(:,:,:,1)+M(1,2)*Def(:,:,:,2)+M(1,3)*Def(:,:,:,3)+M(1,4);
 new_posit(:,:,:,2) = M(2,1)*Def(:,:,:,1)+M(2,2)*Def(:,:,:,2)+M(2,3)*Def(:,:,:,3)+M(2,4);

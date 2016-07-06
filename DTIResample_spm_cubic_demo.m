@@ -1,4 +1,4 @@
-function DTIResample_spm_demo
+function DTIResample_spm_cubic_demo
 
 filenames = spm_select(2, 'image');
 filenames = cellstr(filenames);
@@ -40,7 +40,7 @@ DTFile = spm_select(1, 'image', 'choose an ExploreDTI dataset to move');
 [pat, tit, ext, ~] = spm_fileparts(DTFile);
 DT = spm_read_vols(spm_vol(fullfile(pat, [tit, ext])));
 
-DT2 = DTIResample(DT, diffeoField, Def, mat, VG, VF);
+DT2 = DTIResample_cubic(DT, diffeoField, Def, mat, VG, VF);
 
 fname = inputdlg({'Output file name'}, 'Specified filename');
 fname = fname{1};
