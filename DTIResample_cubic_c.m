@@ -25,18 +25,20 @@ Dcell_logm = cellfun(@logm_adj, Dcell, 'UniformOutput', false);
 [Dxx, Dxy, Dxz, Dyy, Dyz, Dzz] = cellfun(@Matrix2DT, Dcell_logm);
 
 %---%
-cxx = spm_diffeo('bsplinc', single(Dxx), [1 1 1 0 0 0]);
-Dxx_cubic = spm_diffeo('bsplins', cxx, new_posit, [1 1 1 0 0 0]);
-cxy = spm_diffeo('bsplinc', single(Dxy), [1 1 1 0 0 0]);
-Dxy_cubic = spm_diffeo('bsplins', cxy, new_posit, [1 1 1 0 0 0]);
-cxz = spm_diffeo('bsplinc', single(Dxz), [1 1 1 0 0 0]);
-Dxz_cubic = spm_diffeo('bsplins', cxz, new_posit, [1 1 1 0 0 0]);
-cyy = spm_diffeo('bsplinc', single(Dyy), [1 1 1 0 0 0]);
-Dyy_cubic = spm_diffeo('bsplins', cyy, new_posit, [1 1 1 0 0 0]);
-cyz = spm_diffeo('bsplinc', single(Dyz), [1 1 1 0 0 0]);
-Dyz_cubic = spm_diffeo('bsplins', cyz, new_posit, [1 1 1 0 0 0]);
-czz = spm_diffeo('bsplinc', single(Dzz), [1 1 1 0 0 0]);
-Dzz_cubic = spm_diffeo('bsplins', czz, new_posit, [1 1 1 0 0 0]);
+d = [1 1 1 0 0 0];
+
+cxx = spm_diffeo('bsplinc', single(Dxx), d);
+Dxx_cubic = spm_diffeo('bsplins', cxx, new_posit, d);
+cxy = spm_diffeo('bsplinc', single(Dxy), d);
+Dxy_cubic = spm_diffeo('bsplins', cxy, new_posit, d);
+cxz = spm_diffeo('bsplinc', single(Dxz), d);
+Dxz_cubic = spm_diffeo('bsplins', cxz, new_posit, d);
+cyy = spm_diffeo('bsplinc', single(Dyy), d);
+Dyy_cubic = spm_diffeo('bsplins', cyy, new_posit, d);
+cyz = spm_diffeo('bsplinc', single(Dyz), d);
+Dyz_cubic = spm_diffeo('bsplins', cyz, new_posit, d);
+czz = spm_diffeo('bsplinc', single(Dzz), d);
+Dzz_cubic = spm_diffeo('bsplins', czz, new_posit, d);
 
 DT_cubic = cat(4, Dxx_cubic, Dxy_cubic, Dxz_cubic, Dyy_cubic, Dyz_cubic, Dzz_cubic);
 Dcell_cubic = DT2Matrix(DT_cubic);
