@@ -1,4 +1,4 @@
-function DWI_con_for_Resample(DT, matFileName, filename, outputFile, flags)
+function DWI_con_for_Resample(DT, matFileName, filename, outputFile, varargin)
 %DWI_CON_FOR_RESAMPLE is a function used a DT to generate a simulate dwis files. The b
 %value and b vector and B0 image all come from a exploreDTI mat file. The
 %default dwi files name is template.nii.
@@ -14,7 +14,8 @@ function DWI_con_for_Resample(DT, matFileName, filename, outputFile, flags)
 %Shaofeng Duan
 %Institute of High Energy Physics
 %2016-05-27
-
+matFileName = spm_select(Inf, 'mat', 'choose one trafo mat file ...');
+filename = spm_select(1, 'image', 'choose a nii file which header information will be used...');
 V = spm_vol(filename);
 dwi = load(matFileName, 'b', 'DWIB0');
 bmat = dwi.b;
@@ -38,7 +39,8 @@ end
 
 Y(isnan(Y)) = 0;
 
-fname = outputFile;
+fpath = spm_select(1, 'dir', 'choose a directory to store the tempalte file.');
+fname = fullfile(fpath, outputFile);
 dt = V.dt(1);
 sf  = V.pinfo(1);
 off = V.pinfo(2);
@@ -59,7 +61,7 @@ for i=1:size(ni.dat,4)
     ni.dat(:,:,:,i) = Y(:, :, :, i);
 end
 
-if flags == 1
+if ~isempty(varargin)
     IND = bmat(:,[1 4 6])<0;
     bmat([IND(:,1) false([size(IND,1) 2]) IND(:,2) false([size(IND,1) 1]) IND(:,3)])=0;
     bvals = round(sum(bmat(:,[1 4 6]),2)); % the b-values
@@ -78,11 +80,11 @@ if flags == 1
     grad(:, 1) = grad(:, 1) * (-1);
     grad = grad(:, [2, 1, 3]);
 
-    fid1 = fopen('orient.bval', 'w+');
+    fid1 = fopen(fullfile(fpath, 'orient.bval'), 'w+');
     fprintf(fid1, '%f\t', bvals);
     fclose(fid1);
 
-    fid2 = fopen('orient.bvec', 'w+');
+    fid2 = fopen(fullfile(fpath, 'orient.bvec'), 'w+');
     fprintf(fid2, '%f\t', grad(:, 1));
     fprintf(fid2, '\n');
     fprintf(fid2, '%f\t', grad(:, 2));

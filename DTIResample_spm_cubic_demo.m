@@ -44,7 +44,10 @@ DT2 = DTIResample_cubic_c(DT, diffeoField, Def, mat, VG, VF);
 
 fname = inputdlg({'Output file name'}, 'Specified filename');
 fname = fname{1};
-DWI_con_for_Resample(DT2, fname, 1); %used to reconstruct the DWIs.
+
+matFileName = spm_select(Inf, 'mat', 'choose one trafo mat file ...');
+filename = spm_select(1, 'image', 'choose a nii file which header information will be used...');
+DWI_con_for_Resample(DT2, matFileName, filename, fname, 1); %used to reconstruct the DWIs.
 
 
 %==========================================================================

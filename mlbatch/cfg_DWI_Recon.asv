@@ -1,0 +1,19 @@
+function RecPro = cfg_DWI_Recon
+
+DTFile = cfg_files;
+DTFile.name = 'DT image';
+DTFile.tag = 'DT_file';
+DTFile.filter = {'nii'};
+DTFile.num = [0, Inf];
+DTFile.help = {'choose the DT image', 'a 4-D image storing diffusion tensor elements.'};
+
+outFile = cfg_entry;
+outFile.name = 'Output file name';
+outFile.tag = 'out_file';
+outFile.strtype = 's';
+outFile.num = [1, 100];
+outFile.help = {'give a name for the output image', 'no need for extentional name'};
+
+RecPro = cfg_exbranch;
+RecPro.name = 'DWI Reconstruction';
+RecPro.

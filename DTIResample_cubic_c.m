@@ -45,7 +45,7 @@ Dcell_cubic = DT2Matrix(DT_cubic);
 Dcell_cubic_expm = cellfun(@expm, Dcell_cubic, 'UniformOutput', false);
 %---%
 temp = cell(size(Dcell_cubic_expm));
-h_wait = waitbar(0, 'please wait...');
+spm_progress_bar('Init', 1);
 for aa = 1:size(Def, 3)
     for bb = 1:size(Def, 2)
         for cc = 1:size(Def, 1)
@@ -57,9 +57,9 @@ for aa = 1:size(Def, 3)
             temp{cc, bb, aa} = Dt_adj;  
         end
     end
-    waitbar(aa/size(Def, 3));
+    spm_progress_bar('Set',aa/size(Def, 3));
 end
-close(h_wait);
+spm_progress_bar('Clear');
 
 [Dxx, Dxy, Dxz, Dyy, Dyz, Dzz] = cellfun(@Matrix2DT, temp);
 DT = zeros(size(DT));
