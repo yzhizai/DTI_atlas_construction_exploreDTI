@@ -49,12 +49,17 @@ spm_progress_bar('Init', 1);
 for aa = 1:size(Def, 3)
     for bb = 1:size(Def, 2)
         for cc = 1:size(Def, 1)
-            F = reshape(J(cc, bb, aa, :, :), 3,3) + eye(3);
-            F = inv(F);
-            R = (F*F')^(-1/2)*F;  %FS method
-            Dt = Dcell_cubic_expm{cc, bb, aa};
-            Dt_adj = R*Dt*R';
-            temp{cc, bb, aa} = Dt_adj;  
+            F_temp = reshape(J(cc, bb, aa, :, :), 3,3);
+            if sum(sum(isnan(F_temp))) || sum(sum(isinf(F_temp)))
+                temp{cc, bb, aa} = zeros(3);
+            else
+                F = F_temp + eye(3);
+                F = pinv(F);
+                R = (F*F')^(-1/2)*F;  %FS method
+                Dt = Dcell_cubic_expm{cc, bb, aa};
+                Dt_adj = R*Dt*R';
+                temp{cc, bb, aa} = Dt_adj;  
+            end
         end
     end
     spm_progress_bar('Set',aa/size(Def, 3));
@@ -62,13 +67,14 @@ end
 spm_progress_bar('Clear');
 
 [Dxx, Dxy, Dxz, Dyy, Dyz, Dzz] = cellfun(@Matrix2DT, temp);
-DT = zeros(size(DT));
+DT = zeros([size(Def(:, :, :, 1)), 6]);
 DT(:, :, :, 1) = Dxx;
 DT(:, :, :, 2) = Dxy;
 DT(:, :, :, 3) = Dxz;
 DT(:, :, :, 4) = Dyy;
 DT(:, :, :, 5) = Dyz;
 DT(:, :, :, 6) = Dzz;
+DT(DT > 0.01) = 0;
 
 function val = logm_adj(DT)
 if isequal(DT, zeros(3))

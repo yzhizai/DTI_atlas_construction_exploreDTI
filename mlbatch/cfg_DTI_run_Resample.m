@@ -57,7 +57,6 @@ ni.descrip = 'Diffusion tensor';
 create(ni);
 for i=1:size(ni.dat,4)
     ni.dat(:,:,:,i) = DT_res(:, :, :, i);
-    spm_get_space([ni.dat.fname ',' num2str(i)], V(i).mat);
 end
 
 out = fname;
