@@ -55,7 +55,7 @@ for aa = 1:size(Def, 3)
             else
                 F = F_temp + eye(3);
                 F = pinv(F);
-                R = (F*F')^(-1/2)*F;  %FS method
+                R = sqrtm(F*F')\F;  %FS method
                 Dt = Dcell_cubic_expm{cc, bb, aa};
                 Dt_adj = R*Dt*R';
                 temp{cc, bb, aa} = Dt_adj;  
@@ -65,6 +65,7 @@ for aa = 1:size(Def, 3)
     spm_progress_bar('Set',aa/size(Def, 3));
 end
 spm_progress_bar('Clear');
+
 
 [Dxx, Dxy, Dxz, Dyy, Dyz, Dzz] = cellfun(@Matrix2DT, temp);
 DT = zeros([size(Def(:, :, :, 1)), 6]);

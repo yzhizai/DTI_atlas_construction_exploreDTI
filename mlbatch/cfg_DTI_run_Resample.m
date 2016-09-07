@@ -34,7 +34,8 @@ for j=1:length(z)
     tmp(:,:,j,3) = single(Z2);
 end
 
-diffeoField = Def - tmp;
+% diffeoField = Def - tmp;
+diffeoField = Def;
 
 DT_res = DTIResample_cubic_c(DT, diffeoField, Def, mat, VG, VF);
 

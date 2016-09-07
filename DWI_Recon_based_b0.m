@@ -28,16 +28,9 @@ Dyy = DT(:, :, :, 4);
 Dyz = DT(:, :, :, 5);
 Dzz = DT(:, :, :, 6);
 
-unormal_temp = zeros(size(Y0)); %choose the unormal points.
 
 for aa = 1:size(bmat, 1)
     Y_temp = Y0.*exp(-(bmat(aa, 1)*Dxx + bmat(aa, 2)*Dxy + bmat(aa, 3)*Dxz + bmat(aa, 4)*Dyy + bmat(aa, 5)*Dyz + bmat(aa, 6)*Dzz));
-    unormal_temp = unormal_temp | (Y_temp > Y0) | (Y_temp < 0);
-end
-
-for aa = 1:size(bmat, 1)
-    Y_temp = Y0.*exp(-(bmat(aa, 1)*Dxx + bmat(aa, 2)*Dxy + bmat(aa, 3)*Dxz + bmat(aa, 4)*Dyy + bmat(aa, 5)*Dyz + bmat(aa, 6)*Dzz));
-    Y_temp(unormal_temp) = Y0(unormal_temp);
     Y(:, :, :, aa) = Y_temp;
 end
 
