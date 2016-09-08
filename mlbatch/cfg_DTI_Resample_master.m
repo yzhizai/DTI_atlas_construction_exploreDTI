@@ -11,7 +11,7 @@ cfg_dwi_recon.help = {'These modules are used for DTI resample'};
 cfg = cfg_repeat;
 cfg.name = 'DTI Resample Progress';
 cfg.tag = 'DTI_Resample_Progress';
-cfg.values = {cfg_DTI_Resample, cfg_dwi_recon};
+cfg.values = {cfg_DTI_Resample, cfg_dwi_recon, cfg_DT_mean};
 cfg.forcestruct = true;
 cfg.help = {'These modules are used for DTI resample'};
 
