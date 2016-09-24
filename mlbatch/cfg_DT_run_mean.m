@@ -1,11 +1,13 @@
 function out = cfg_DT_run_mean(job)
 
 DTFiles = job.DT_file;
+maskFile = job.mask_file;
 outFile = job.outFile;
 
 firstFile = DTFiles{1};
 VG = spm_vol(firstFile);
 [pat, ~, ~, ~] = spm_fileparts(firstFile);
+mask_explicit = spm_read_vols(spm_vol(maskFile{1}));
 
 DT_Matrix = [];
 for aa = 1:numel(DTFiles);
@@ -14,6 +16,6 @@ for aa = 1:numel(DTFiles);
 end
 
 outFileName = fullfile(pat, [outFile, '.nii']);
-mean_DT(DT_Matrix, VG, outFileName);
+mean_DT_adv(DT_Matrix, mask_explicit, VG, outFileName);
 
 out = {outFileName};

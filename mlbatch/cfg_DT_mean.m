@@ -6,6 +6,12 @@ DTFiles.tag = 'DT_file';
 DTFiles.filter = {'^DT'};
 DTFiles.help = {'choose the DT files resampled from template space'};
 
+maskFile = cfg_files;
+maskFile.name = 'choose a explicit mask';
+maskFile.tag = 'mask_file';
+maskFile.filter = {'image'};
+maskFile.help = {'choose a mask used to', 'reduce the calculate time'};
+
 outFile = cfg_entry;
 outFile.name = 'output file name';
 outFile.tag = 'outFile';
@@ -16,7 +22,7 @@ outFile.help = {'input the name of the output DT'};
 meanDT = cfg_exbranch;
 meanDT.name = 'to mean DTs';
 meanDT.tag = 'meanDT';
-meanDT.val = {DTFiles, outFile};
+meanDT.val = {DTFiles, maskFile, outFile};
 meanDT.prog = @cfg_DT_run_mean;
 meanDT.vout = @cfg_DT_vout_mean;
 meanDT.help = {'This is used to mean DTs'};
