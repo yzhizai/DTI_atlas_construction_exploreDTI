@@ -1,18 +1,21 @@
-function mean_DT_adv(DT_Matrix, mask_explicit, VG, outFileName)
-%MEAN_DT - a function used to average the DTs from resampled DT
+function mean_DT_adv_adv(DT_Matrix, mask_temp, VG, outFileName)
+%MEAN_DT_ADV - a function used to average the DTs from resampled DT
 %
 %Input:
 %  DT_Matrix -  the cat(4, DT1, DT2, ...)
+%  mask_explicit - a mask used to reduce calculation quantity.
 %  VG - a reference image vol
 %  outFileName - a string to name the output DT file
 %
 %Institute of High Energy Physics
 %Shaofeng Duan
-%2016-09-07
+%2016-09-24
 
-[dim1, dim2, dim3, dim4, dim5] = size(DT_Matrix);
+mask_explicit = logical(mask_temp);
+
+[~, ~, ~, dim4, dim5] = size(DT_Matrix);
 mask_explicit_rep = repmat(mask_explicit, 1, 1, 1, dim4);  %generate a mask with size same as DT matrix
-DT_sum = zeros(sum(sum(sum(find(mask_explicit == 1)))), dim4);
+DT_sum = zeros(numel(find(mask_explicit == 1)), dim4);
 spm_progress_bar('Init', 100, '', 'processing');
 for aa = 1:dim5
     DT = DT_Matrix(:, :, :, :, aa); 
@@ -28,13 +31,14 @@ for aa = 1:dim5
 end
 spm_progress_bar('Clear');
 
-DT_mean = DT_sum/dim5;
+mean_para = mask_temp(mask_explicit == 1);
+DT_mean = DT_sum./repmat(mean_para, 1, dim4);
 Dcell_new = DT2Matrix_adv(DT_mean);
 Dcell_expm = cellfun(@expm, Dcell_new, 'UniformOutput', false);
 
 [Dxx, Dxy, Dxz, Dyy, Dyz, Dzz] = cellfun(@Matrix2DT, Dcell_expm);
 DT = zeros(size(mask_explicit_rep));
-DT(mask_explicit == 1) = Dxx;
+DT(mask_explicit_rep == 1) = cat(1, Dxx, Dxy, Dxz, Dyy, Dyz, Dzz);
 DT(DT > 0.01) = 0;
 
 fname = outFileName;
