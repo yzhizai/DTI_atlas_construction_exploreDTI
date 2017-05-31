@@ -3,7 +3,7 @@ function  meanDT = cfg_DT_mean
 DTFiles = cfg_files;
 DTFiles.name = 'choose the DT files';
 DTFiles.tag = 'DT_file';
-DTFiles.filter = {'^DT'};
+DTFiles.filter = {'DT'};
 DTFiles.help = {'choose the DT files resampled from template space'};
 
 maskFile = cfg_files;

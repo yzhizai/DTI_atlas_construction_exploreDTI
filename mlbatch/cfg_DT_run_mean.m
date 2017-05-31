@@ -16,6 +16,6 @@ for aa = 1:numel(DTFiles);
 end
 
 outFileName = fullfile(pat, [outFile, '.nii']);
-mean_DT_adv(DT_Matrix, mask_explicit, VG, outFileName);
+mean_DT_adv(DT_Matrix, round(mask_explicit), VG, outFileName);
 
 out = {outFileName};

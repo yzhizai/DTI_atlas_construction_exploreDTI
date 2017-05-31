@@ -15,10 +15,11 @@ function bmatrix = bval_bvec_to_matrix(bval, bvec, xyz_perm, xyz_sign)
 %Shaofeng Duan
 %Institute of High Energy Physics
 %2016-07-20
-
 N = numel(bval);
-bvec = bvec(xyz_perm, :);
-bvec = bvec.*repmat(xyz_sign', 1, N);
+if nargin > 2
+    bvec = bvec(xyz_perm, :);
+    bvec = bvec.*repmat(xyz_sign', 1, N);
+end
 bvec = bvec';
 
 grad_a = bvec(:, 1);
