@@ -8,7 +8,7 @@ function DT = estimate_DT_with_RESTORE(b_matrix, y_exp)
 % Output:
 % 
 DT0 = [0.5, 0, 0, 0.5, 0, 0.5]'*1e-3;
-options = optimoptions('lsqnonlin','OptimalityTolerance',1e-10, 'FunctionTolerance', 1e-10, 'Display', 'off');
+options = optimoptions('lsqnonlin', 'Display', 'off');
 DT = lsqnonlin(@(x)objective_func_nonls(x, b_matrix, y_exp), DT0,[0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1], options);
 %% 
 % This section is used to iterately caculate the DT following RESTORE
